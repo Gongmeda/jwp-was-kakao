@@ -1,9 +1,7 @@
 package controller;
 
 import db.DataBase;
-import http.HttpQueryParams;
-import http.HttpRequest;
-import http.HttpResponse;
+import http.*;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +12,8 @@ import utils.FileIoUtils;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
 
 public class RequestController {
     private static final Logger logger = LoggerFactory.getLogger(RequestController.class);
@@ -55,9 +55,16 @@ public class RequestController {
         User user = new User(userId, password, name, email);
 
         DataBase.addUser(user);
-        HttpResponse response = new HttpResponse();
-        response.setStatus(HttpStatus.FOUND);
-        response.getHeaders().put("Location", "/index.html");
+        HttpHeaders headers = HttpHeaders.of(Map.of(
+                "Location", List.of("/index.html")
+        ));
+
+        HttpResponse response = new HttpResponse(
+                headers,
+                HttpStatus.FOUND,
+                HttpVersion.HTTP_1_1,
+                null
+        );
         response.respond(dos);
     }
 
@@ -80,10 +87,16 @@ public class RequestController {
     private static void handleRoot(DataOutputStream dos) throws IOException {
         byte[] body = "Hello World".getBytes();
 
-        HttpResponse response = new HttpResponse();
-        response.getHeaders().put("Content-Type", "text/html;charset=utf-8");
-        response.setBody(body);
+        HttpHeaders headers = HttpHeaders.of(Map.of(
+                "Content-Type", List.of("text/html;charset=utf-8")
+        ));
 
+        HttpResponse response = new HttpResponse(
+                headers,
+                HttpStatus.OK,
+                HttpVersion.HTTP_1_1,
+                body
+        );
         response.respond(dos);
     }
 
@@ -92,16 +105,19 @@ public class RequestController {
             String path = request.getStartLine().getPath();
             String filePath = parentFolder + path;
 
-            HttpResponse response = new HttpResponse();
-
             byte[] body = FileIoUtils.loadFileFromClasspath(filePath);
-            response.setBody(body);
-            response.setStatus(HttpStatus.OK);
-            response.setHttpVersion(request.getStartLine().getHttpVersion());
 
             String mime = parseMIME(filePath);
-            response.getHeaders().put("Content-Type", mime + ";charset=utf-8");
+            HttpHeaders headers = HttpHeaders.of(Map.of(
+                    "Content-Type", List.of(mime + ";charset=utf-8")
+            ));
 
+            HttpResponse response = new HttpResponse(
+                    headers,
+                    HttpStatus.OK,
+                    HttpVersion.HTTP_1_1,
+                    body
+            );
             response.respond(dos);
 
             return true;

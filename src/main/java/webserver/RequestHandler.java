@@ -4,7 +4,7 @@ import controller.RequestController;
 import http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.HttpRequestParserUtils;
+import http.HttpRequestParser;
 
 import java.io.*;
 import java.net.Socket;
@@ -26,7 +26,7 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             DataOutputStream dos = new DataOutputStream(out);
 
-            HttpRequest httpRequest = HttpRequestParserUtils.parse(br);
+            HttpRequest httpRequest = HttpRequestParser.parse(br);
             logger.debug(httpRequest.toString());
 
             RequestController.handleRequest(httpRequest, dos);

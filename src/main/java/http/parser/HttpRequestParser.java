@@ -1,5 +1,9 @@
-package http;
+package http.parser;
 
+import http.HttpHeaders;
+import http.HttpQueryParams;
+import http.HttpRequest;
+import http.RequestLine;
 import utils.IOUtils;
 
 import java.io.BufferedReader;

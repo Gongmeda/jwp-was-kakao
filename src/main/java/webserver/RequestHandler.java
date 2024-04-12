@@ -4,7 +4,7 @@ import controller.RequestController;
 import http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import http.HttpRequestParser;
+import http.parser.HttpRequestParser;
 
 import java.io.*;
 import java.net.Socket;

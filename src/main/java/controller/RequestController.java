@@ -2,6 +2,7 @@ package controller;
 
 import db.DataBase;
 import http.*;
+import http.parser.MimeTypeParser;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +20,11 @@ public class RequestController {
     private static final Logger logger = LoggerFactory.getLogger(RequestController.class);
 
     public static void handleRequest(HttpRequest httpRequest, DataOutputStream dos) throws IOException {
-        String path = httpRequest.getStartLine().getPath();
-        if (isFile(path)) {
-            handleFile(httpRequest, dos);
+        if (handleFileRequest(httpRequest, dos)) {
             return;
         }
+
+        String path = httpRequest.getStartLine().getPath();
 
         if (path.startsWith("/user/create")) {
             if (httpRequest.getStartLine().getMethod().equals(HttpMethod.GET)) {
@@ -68,46 +69,31 @@ public class RequestController {
         response.respond(dos);
     }
 
-    private static boolean isFile(String path) {
-        String[] paths = path.split("\\?");
-        String mime = java.net.URLConnection.guessContentTypeFromName(paths[0]);
-        return mime != null;
-    }
-
-    private static void handleFile(HttpRequest httpRequest, DataOutputStream dos) throws IOException {
-        // 1. template (html)
-        if (handleFileResponse("templates", httpRequest, dos)) {
-            return;
+    private static boolean handleFileRequest(HttpRequest httpRequest, DataOutputStream dos) throws IOException {
+        // 1. templates
+        if (handleFileRequest("templates", httpRequest, dos)) {
+            return true;
         }
 
-        // 2. static (css...)
-        handleFileResponse("static", httpRequest, dos);
+        // 2. static
+        if (handleFileRequest("static", httpRequest, dos)) {
+            return true;
+        }
+
+        return false;
     }
 
-    private static void handleRoot(DataOutputStream dos) throws IOException {
-        byte[] body = "Hello World".getBytes();
-
-        HttpHeaders headers = HttpHeaders.of(Map.of(
-                "Content-Type", List.of("text/html;charset=utf-8")
-        ));
-
-        HttpResponse response = new HttpResponse(
-                headers,
-                HttpStatus.OK,
-                HttpVersion.HTTP_1_1,
-                body
-        );
-        response.respond(dos);
-    }
-
-    private static boolean handleFileResponse(String parentFolder, HttpRequest request, DataOutputStream dos) throws IOException {
+    private static boolean handleFileRequest(String parentFolder, HttpRequest request, DataOutputStream dos) throws IOException {
         try {
             String path = request.getStartLine().getPath();
             String filePath = parentFolder + path;
 
+            if (filePath.endsWith("/")) {
+                return false;
+            }
             byte[] body = FileIoUtils.loadFileFromClasspath(filePath);
 
-            String mime = parseMIME(filePath);
+            String mime = MimeTypeParser.parse(filePath);
             HttpHeaders headers = HttpHeaders.of(Map.of(
                     "Content-Type", List.of(mime + ";charset=utf-8")
             ));
@@ -129,11 +115,19 @@ public class RequestController {
         }
     }
 
-    private static String parseMIME(String path) {
-        String mimeType = java.net.URLConnection.guessContentTypeFromName(path);
-        if (mimeType == null) {
-            mimeType = "application/octet-stream";
-        }
-        return mimeType;
+    private static void handleRoot(DataOutputStream dos) throws IOException {
+        byte[] body = "Hello World".getBytes();
+
+        HttpHeaders headers = HttpHeaders.of(Map.of(
+                "Content-Type", List.of("text/html;charset=utf-8")
+        ));
+
+        HttpResponse response = new HttpResponse(
+                headers,
+                HttpStatus.OK,
+                HttpVersion.HTTP_1_1,
+                body
+        );
+        response.respond(dos);
     }
 }

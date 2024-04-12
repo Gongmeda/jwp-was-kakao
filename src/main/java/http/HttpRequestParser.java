@@ -14,12 +14,12 @@ import java.util.Map;
 public class HttpRequestParser {
 
     public static HttpRequest parse(BufferedReader br) throws IOException {
-        StartLine startLine = StartLine.of(br.readLine());
+        RequestLine requestLine = RequestLine.of(br.readLine());
         HttpHeaders headers = HttpHeaders.of(parseHeader(br));
-        HttpQueryParams queryParams = HttpQueryParams.of(startLine.getPath());
+        HttpQueryParams queryParams = HttpQueryParams.of(requestLine.getPath());
         String body = parseBody(br, headers);
 
-        return new HttpRequest(startLine, headers, queryParams, body);
+        return new HttpRequest(requestLine, headers, queryParams, body);
     }
 
     private static Map<String, List<String>> parseHeader(BufferedReader br) throws IOException {

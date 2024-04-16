@@ -47,18 +47,8 @@ public class HttpResponse {
         headers.setContentLength(body.length);
     }
 
-    public void notFound() {
-        statusLine.setStatus(HttpStatus.NOT_FOUND);
-        setBody("<h1>404 Not Found</h1>".getBytes(), ContentType.HTML);
-    }
-
-    public void methodNotAllowed() {
-        statusLine.setStatus(HttpStatus.METHOD_NOT_ALLOWED);
-        setBody("<h1>405 Method Not Allowed</h1>".getBytes(), ContentType.HTML);
-    }
-
-    public void internalServerError() {
-        statusLine.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-        setBody("<h1>500 Internal Server Error</h1>".getBytes(), ContentType.HTML);
+    public void statusResponse(HttpStatus status) {
+        statusLine.setStatus(status);
+        setBody(String.format("<h1>%s</h1>", status.getReasonPhrase()).getBytes(), ContentType.HTML);
     }
 }

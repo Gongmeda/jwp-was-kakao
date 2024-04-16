@@ -16,7 +16,7 @@ public class HttpHeaders {
     private final Map<String, List<String>> headers;
 
     public static HttpHeaders empty() {
-        return new HttpHeaders(new HashMap<>());
+        return new HttpHeaders(new TreeMap<>());
     }
 
     public static HttpHeaders parse(String text) {
@@ -33,7 +33,11 @@ public class HttpHeaders {
 
     private HttpHeaders(Map<String, List<String>> headers) {
         requireNonNull(headers);
-        this.headers = new HashMap<>(headers);
+        this.headers = new TreeMap<>(headers);
+    }
+
+    public List<String> get(String key) {
+        return headers.get(key);
     }
 
     public void add(String key, String value) {
@@ -69,5 +73,18 @@ public class HttpHeaders {
         return headers.entrySet().stream()
             .map(entry -> entry.getKey() + KEY_VALUE_SPLITTER + String.join(VALUE_DELIMITER, entry.getValue()))
             .collect(Collectors.joining(System.lineSeparator()));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HttpHeaders that = (HttpHeaders) o;
+        return Objects.equals(headers, that.headers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(headers);
     }
 }

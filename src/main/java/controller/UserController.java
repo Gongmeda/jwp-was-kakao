@@ -17,7 +17,7 @@ public class UserController extends Controller {
 
     @Override
     protected void doGet(HttpRequest httpRequest, HttpResponse httpResponse) {
-        QueryParams queryParams = httpRequest.getRequestLine().getUri().getQueryParams();
+        QueryParams queryParams = QueryParams.parse(httpRequest.getRequestLine().getUri().getQuery());
         createUser(queryParams, httpResponse);
     }
 

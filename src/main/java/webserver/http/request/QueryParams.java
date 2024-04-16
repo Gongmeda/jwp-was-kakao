@@ -19,6 +19,10 @@ public class QueryParams {
     }
 
     public static QueryParams parse(String text) {
+        if (text == null || text.isEmpty()) {
+            return empty();
+        }
+
         Map<String, String> map = new HashMap<>();
         for (String line : text.split("&")) {
             String[] tokens = line.split("=");

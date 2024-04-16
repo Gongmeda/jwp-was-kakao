@@ -16,6 +16,7 @@ public abstract class Controller {
 
         if (method == HttpMethod.POST) {
             doPost(httpRequest, httpResponse);
+            return;
         }
 
         httpResponse.methodNotAllowed();

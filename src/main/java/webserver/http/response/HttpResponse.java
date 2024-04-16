@@ -19,7 +19,7 @@ public class HttpResponse {
 
     public HttpResponse() {
         this.statusLine = new StatusLine(DEFAULT_PROTOCOL_VERSION, DEFAULT_STATUS);
-        this.headers = new HttpHeaders();
+        this.headers = HttpHeaders.empty();
     }
 
     public void respond(DataOutputStream dos) throws IOException {

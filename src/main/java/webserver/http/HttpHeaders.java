@@ -1,13 +1,11 @@
 package webserver.http;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.requireNonNull;
-
 public class HttpHeaders {
-
-    private static final HttpHeaders DEFAULT_HEADERS = new HttpHeaders(Collections.unmodifiableMap(new HashMap<>()));
 
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String CONTENT_LENGTH = "Content-Length";
@@ -17,9 +15,13 @@ public class HttpHeaders {
 
     private final Map<String, List<String>> headers;
 
+    public static HttpHeaders empty() {
+        return new HttpHeaders(new HashMap<>());
+    }
+
     public static HttpHeaders parse(String text) {
         if (Objects.isNull(text) || text.isEmpty()) {
-            return DEFAULT_HEADERS;
+            return empty();
         }
         Map<String, List<String>> headers = Arrays.stream(text.split(System.lineSeparator()))
             .map(line -> line.split(KEY_VALUE_SPLITTER))
@@ -29,13 +31,19 @@ public class HttpHeaders {
         return new HttpHeaders(headers);
     }
 
-    public HttpHeaders() {
-        this.headers = new HashMap<>();
-    }
-
-    public HttpHeaders(Map<String,List<String>> headers) {
+    private HttpHeaders(Map<String, List<String>> headers) {
         requireNonNull(headers);
         this.headers = new HashMap<>(headers);
+    }
+
+    public void add(String key, String value) {
+        requireNonNull(key);
+        requireNonNull(value);
+
+        if (!headers.containsKey(key)) {
+            headers.put(key, new ArrayList<>());
+        }
+        headers.get(key).add(value);
     }
 
     public int getContentLength() {
@@ -47,17 +55,19 @@ public class HttpHeaders {
     }
 
     public void setContentType(String contentType) {
-        headers.put(CONTENT_TYPE, List.of(contentType));
+        headers.remove(CONTENT_TYPE);
+        add(CONTENT_TYPE, contentType);
     }
 
     public void setContentLength(int contentLength) {
-        headers.put(CONTENT_LENGTH, List.of(String.valueOf(contentLength)));
+        headers.remove(CONTENT_LENGTH);
+        add(CONTENT_LENGTH, String.valueOf(contentLength));
     }
 
     @Override
     public String toString() {
         return headers.entrySet().stream()
-                   .map(entry -> entry.getKey() + KEY_VALUE_SPLITTER + String.join(VALUE_DELIMITER, entry.getValue()))
-                   .collect(Collectors.joining(System.lineSeparator()));
+            .map(entry -> entry.getKey() + KEY_VALUE_SPLITTER + String.join(VALUE_DELIMITER, entry.getValue()))
+            .collect(Collectors.joining(System.lineSeparator()));
     }
 }

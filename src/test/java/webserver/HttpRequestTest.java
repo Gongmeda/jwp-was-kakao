@@ -42,15 +42,16 @@ public class HttpRequestTest {
         restTemplate = new RestTemplate();
     }
 
+    @DisplayName("따로 처리되지 않은 경로로 요청시 404 Not Found 응답")
     @Test
-    void request_resttemplate() {
+    void request_undefined() {
         Throwable throwable = catchThrowable(() -> restTemplate.getForEntity("http://localhost:8080", String.class));
         assertThat(throwable).isInstanceOf(NotFound.class);
     }
 
     @DisplayName("templates의 `/index.html` 파일 응답")
     @Test
-    void request_indexhtml() throws Exception {
+    void request_index_html() throws Exception {
         ResponseEntity<String> response = restTemplate.getForEntity("http://localhost:8080/index.html", String.class);
 
         String indexFile = new String(FileIoUtils.loadFileFromClasspath("templates/index.html"));

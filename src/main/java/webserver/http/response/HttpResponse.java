@@ -4,9 +4,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 import webserver.http.ContentType;
+import webserver.http.HttpHeaders;
 import webserver.http.HttpStatus;
 import webserver.http.HttpVersion;
-import webserver.http.HttpHeaders;
 
 public class HttpResponse {
 
@@ -45,6 +45,11 @@ public class HttpResponse {
         this.body = body;
         headers.setContentType(contentType.getContentType());
         headers.setContentLength(body.length);
+    }
+
+    public void notFound() {
+        statusLine.setStatus(HttpStatus.NOT_FOUND);
+        setBody("<h1>404 Not Found</h1>".getBytes(), ContentType.HTML);
     }
 
     public void methodNotAllowed() {

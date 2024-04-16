@@ -1,6 +1,5 @@
 package webserver.http;
 
-import java.util.Objects;
 import webserver.http.request.QueryParams;
 
 public class URI {
@@ -8,8 +7,13 @@ public class URI {
     private final String path;
     private final QueryParams queryParams;
 
-    public static URI parse(String path) {
-        return new URI(path, QueryParams.parse(path));
+    public static URI parse(String rawPath) {
+        String[] tokens = rawPath.split("\\?");
+
+        if (tokens.length == 1) {
+            return new URI(tokens[0], QueryParams.empty());
+        }
+        return new URI(tokens[0], QueryParams.parse(tokens[1]));
     }
 
     private URI(String path, QueryParams queryParams) {
@@ -17,16 +21,11 @@ public class URI {
         this.queryParams = queryParams;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        URI uri = (URI) o;
-        return Objects.equals(path, uri.path);
+    public String getPath() {
+        return path;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(path);
+    public QueryParams getQueryParams() {
+        return queryParams;
     }
 }

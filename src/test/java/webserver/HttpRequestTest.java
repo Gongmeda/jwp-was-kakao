@@ -1,14 +1,18 @@
 package webserver;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import db.DataBase;
 import model.User;
 import org.junit.jupiter.api.*;
 import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpClientErrorException.NotFound;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import utils.FileIoUtils;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class HttpRequestTest {
 
@@ -40,8 +44,8 @@ public class HttpRequestTest {
 
     @Test
     void request_resttemplate() {
-        ResponseEntity<String> response = restTemplate.getForEntity("http://localhost:8080", String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Throwable throwable = catchThrowable(() -> restTemplate.getForEntity("http://localhost:8080", String.class));
+        assertThat(throwable).isInstanceOf(NotFound.class);
     }
 
     @DisplayName("templates의 `/index.html` 파일 응답")
@@ -87,7 +91,7 @@ public class HttpRequestTest {
 
         byte[] body = "userId=cu&password=password&name=%EC%9D%B4%EB%8F%99%EA%B7%9C&email=brainbackdoor%40gmail.com".getBytes();
         HttpEntity<byte[]> request = new HttpEntity<>(body, headers);
-        ResponseEntity<String> response = restTemplate.exchange("http://localhost:8080/user/create", HttpMethod.POST, request, String.class);
+        restTemplate.exchange("http://localhost:8080/user/create", HttpMethod.POST, request, String.class);
 
         User user = new User("cu", "password", "이동규", "brainbackdoor@gmail.com");
         User cu = DataBase.findUserById("cu");

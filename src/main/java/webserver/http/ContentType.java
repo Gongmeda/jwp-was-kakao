@@ -1,6 +1,6 @@
 package webserver.http;
 
-import java.net.URLConnection;
+import java.util.Objects;
 import org.springframework.util.StringUtils;
 
 public enum ContentType {
@@ -37,7 +37,7 @@ public enum ContentType {
         }
 
         for (ContentType type : ContentType.values()) {
-            if (type.extension.equals(extension)) {
+            if (Objects.equals(type.extension, extension)) {
                 return type;
             }
         }

@@ -7,16 +7,18 @@ import java.util.stream.Collectors;
 
 public class HttpHeaders {
 
-    private static final String CONTENT_TYPE = "Content-Type";
-    private static final String CONTENT_LENGTH = "Content-Length";
+    private static final String CONTENT_TYPE = "Content-Type".toLowerCase();
+    private static final String CONTENT_LENGTH = "Content-Length".toLowerCase();
+    private static final String COOKIE = "Cookie".toLowerCase();
 
     private static final String KEY_VALUE_SPLITTER = ": ";
     public static final String VALUE_DELIMITER = ",";
 
     private final Map<String, List<String>> headers;
+    private final CookieStore cookieStore;
 
     public static HttpHeaders empty() {
-        return new HttpHeaders(new TreeMap<>());
+        return new HttpHeaders(new TreeMap<>(), CookieStore.empty());
     }
 
     public static HttpHeaders parse(String text) {
@@ -26,28 +28,34 @@ public class HttpHeaders {
         Map<String, List<String>> headers = Arrays.stream(text.split(System.lineSeparator()))
             .map(line -> line.split(KEY_VALUE_SPLITTER))
             .collect(Collectors.toMap(
-                pair -> pair[0],
+                pair -> pair[0].toLowerCase(),
                 pair -> Arrays.asList(pair[1].split(VALUE_DELIMITER))));
-        return new HttpHeaders(headers);
+        if (headers.containsKey(COOKIE)) {
+            String cookieValue = headers.remove(COOKIE).get(0);
+            return new HttpHeaders(headers, CookieStore.parse(cookieValue));
+        }
+        return new HttpHeaders(headers, CookieStore.empty());
     }
 
-    private HttpHeaders(Map<String, List<String>> headers) {
+    private HttpHeaders(Map<String, List<String>> headers, CookieStore cookieStore) {
         requireNonNull(headers);
         this.headers = new TreeMap<>(headers);
+        this.cookieStore = cookieStore;
     }
 
     public List<String> get(String key) {
-        return headers.get(key);
+        return headers.get(key.toLowerCase());
     }
 
     public void add(String key, String value) {
         requireNonNull(key);
         requireNonNull(value);
 
-        if (!headers.containsKey(key)) {
-            headers.put(key, new ArrayList<>());
+        String lowerCaseKey = key.toLowerCase();
+        if (!headers.containsKey(lowerCaseKey)) {
+            headers.put(lowerCaseKey, new ArrayList<>());
         }
-        headers.get(key).add(value);
+        headers.get(lowerCaseKey).add(value);
     }
 
     public int getContentLength() {

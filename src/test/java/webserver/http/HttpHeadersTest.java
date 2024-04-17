@@ -9,16 +9,16 @@ import org.junit.jupiter.api.Test;
 
 class HttpHeadersTest {
 
-    private final String headerString = "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\n"
-                                        + "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\n"
-                                        + "Accept-Encoding: gzip,deflate\n"
-                                        + "Accept-Language: en-us,en;q=0.5\n"
-                                        + "Cache-Control: no-cache\n"
-                                        + "Connection: keep-alive\n"
-                                        + "Host: code.tutsplus.com\n"
-                                        + "Keep-Alive: 300\n"
-                                        + "Pragma: no-cache\n"
-                                        + "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5 (.NET CLR 3.5.30729)";
+    private final String headerString = "accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\n"
+                                        + "accept-charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\n"
+                                        + "accept-encoding: gzip,deflate\n"
+                                        + "accept-language: en-us,en;q=0.5\n"
+                                        + "cache-control: no-cache\n"
+                                        + "connection: keep-alive\n"
+                                        + "host: code.tutsplus.com\n"
+                                        + "keep-alive: 300\n"
+                                        + "pragma: no-cache\n"
+                                        + "user-agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5 (.NET CLR 3.5.30729)";
 
     @DisplayName("HTTP 요청/응답 형식의 문자열로 변환할 수 있다")
     @Test

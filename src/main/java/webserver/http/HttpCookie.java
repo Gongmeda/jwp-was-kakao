@@ -17,4 +17,21 @@ public class HttpCookie {
     public HttpCookie(String name, String value) {
         this(name, value, ROOT_PATH);
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s=%s; path=%s", name, value, path);
+    }
 }

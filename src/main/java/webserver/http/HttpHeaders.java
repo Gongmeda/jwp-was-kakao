@@ -10,6 +10,7 @@ public class HttpHeaders {
     private static final String CONTENT_TYPE = "Content-Type".toLowerCase();
     private static final String CONTENT_LENGTH = "Content-Length".toLowerCase();
     private static final String COOKIE = "Cookie".toLowerCase();
+    private static final String SET_COOKIE = "Set-Cookie".toLowerCase();
 
     private static final String KEY_VALUE_SPLITTER = ": ";
     public static final String VALUE_DELIMITER = ",";
@@ -58,6 +59,10 @@ public class HttpHeaders {
         headers.get(lowerCaseKey).add(value);
     }
 
+    public CookieStore getCookieStore() {
+        return cookieStore;
+    }
+
     public int getContentLength() {
         List<String> contentLength = headers.get(CONTENT_LENGTH);
         if (Objects.isNull(contentLength) || contentLength.size() != 1 || Objects.isNull(contentLength.get(0))) {
@@ -78,7 +83,13 @@ public class HttpHeaders {
 
     @Override
     public String toString() {
-        return headers.entrySet().stream()
+        Map<String, List<String>> headersCopy = new TreeMap<>(headers);
+
+        for (HttpCookie cookie : cookieStore.getCookies()) {
+            headersCopy.put(SET_COOKIE, List.of(cookie.toString()));
+        }
+
+        return headersCopy.entrySet().stream()
             .map(entry -> entry.getKey() + KEY_VALUE_SPLITTER + String.join(VALUE_DELIMITER, entry.getValue()))
             .collect(Collectors.joining(System.lineSeparator()));
     }

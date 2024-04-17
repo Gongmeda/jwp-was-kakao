@@ -55,4 +55,9 @@ public class HttpResponse {
         statusLine.setStatus(status);
         setBody(String.format("<h1>%s</h1>", status.getReasonPhrase()).getBytes(), ContentType.HTML);
     }
+
+    public void redirect(String location) {
+        statusLine.setStatus(HttpStatus.FOUND);
+        headers.add("Location", location);
+    }
 }

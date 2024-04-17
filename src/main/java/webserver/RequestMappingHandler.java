@@ -21,7 +21,9 @@ public class RequestMappingHandler {
 
     static {
         REQUEST_MAP = Map.of(
-            "/user/create", new UserController()
+            "/user/create", new UserCreateController(),
+            "/user/login", new UserLoginController(),
+            "/user/list", new UserListController()
         );
         ADVICES = List.of(
             new SessionControllerAdvice()

@@ -11,9 +11,9 @@ import webserver.http.request.HttpRequest;
 import webserver.http.request.QueryParams;
 import webserver.http.response.HttpResponse;
 
-public class UserController extends Controller {
+public class UserCreateController extends Controller {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserCreateController.class);
 
     @Override
     protected void doGet(HttpRequest httpRequest, HttpResponse httpResponse) {
@@ -38,7 +38,6 @@ public class UserController extends Controller {
         DataBase.addUser(user);
         logger.info("add user: {}", user);
 
-        httpResponse.getHeaders().add("Location", "/index.html");
-        httpResponse.getStatusLine().setStatus(HttpStatus.FOUND);
+        httpResponse.redirect("/index.html");
     }
 }

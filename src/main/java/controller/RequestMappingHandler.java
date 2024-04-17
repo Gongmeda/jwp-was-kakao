@@ -7,7 +7,7 @@ import webserver.http.URI;
 public class RequestMappingHandler {
 
     private static final Map<String, Controller> REQUEST_MAP;
-    private static final Controller DEFAULT_CONTROLLER = new DefaultController();
+    private static final Controller DEFAULT_CONTROLLER = new NotFoundController();
     private static final Controller DEFAULT_RESOURCE_CONTROLLER = new ResourceController();
 
     static {

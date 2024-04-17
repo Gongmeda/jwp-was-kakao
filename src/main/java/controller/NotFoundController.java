@@ -4,7 +4,7 @@ import webserver.http.HttpStatus;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 
-public class DefaultController extends Controller {
+public class NotFoundController extends Controller {
 
     @Override
     protected void doGet(HttpRequest httpRequest, HttpResponse httpResponse) {

@@ -8,9 +8,7 @@ import db.DataBase;
 import model.User;
 import org.junit.jupiter.api.*;
 import org.springframework.http.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpClientErrorException.NotFound;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import utils.FileIoUtils;
 

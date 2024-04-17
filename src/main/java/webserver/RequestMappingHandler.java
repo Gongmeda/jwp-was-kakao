@@ -1,8 +1,14 @@
-package controller;
+package webserver;
 
+import controller.*;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import org.springframework.util.StringUtils;
 import webserver.http.URI;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 
 public class RequestMappingHandler {
 
@@ -16,7 +22,7 @@ public class RequestMappingHandler {
         );
     }
 
-    public static Controller getController(URI uri) {
+    private static Controller getController(URI uri) {
         if (isFile(uri)) {
             return DEFAULT_RESOURCE_CONTROLLER;
         }
@@ -27,5 +33,11 @@ public class RequestMappingHandler {
     private static boolean isFile(URI uri) {
         String filenameExtension = StringUtils.getFilenameExtension(uri.getPath());
         return filenameExtension != null;
+    }
+
+    public static void serve(DataOutputStream dos, HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
+        Controller controller = RequestMappingHandler.getController(httpRequest.getRequestLine().getUri());
+        controller.serve(httpRequest, httpResponse);
+        httpResponse.respond(dos);
     }
 }

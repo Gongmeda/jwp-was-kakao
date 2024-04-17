@@ -7,7 +7,7 @@ import webserver.http.response.HttpResponse;
 
 public abstract class Controller {
 
-    public void service(HttpRequest httpRequest, HttpResponse httpResponse) {
+    public void serve(HttpRequest httpRequest, HttpResponse httpResponse) {
         HttpMethod method = httpRequest.getRequestLine().getMethod();
 
         if (method == HttpMethod.GET) {

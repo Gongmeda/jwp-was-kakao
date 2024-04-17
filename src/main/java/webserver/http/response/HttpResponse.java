@@ -17,7 +17,11 @@ public class HttpResponse {
     private HttpHeaders headers;
     private byte[] body;
 
-    public HttpResponse() {
+    public static HttpResponse empty() {
+        return new HttpResponse();
+    }
+
+    private HttpResponse() {
         this.statusLine = new StatusLine(DEFAULT_PROTOCOL_VERSION, DEFAULT_STATUS);
         this.headers = HttpHeaders.empty();
     }

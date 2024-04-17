@@ -25,7 +25,7 @@ public class RequestHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
 
             HttpRequest httpRequest = HttpRequest.from(br);
-            HttpResponse httpResponse = new HttpResponse();
+            HttpResponse httpResponse = HttpResponse.empty();
 
             RequestMappingHandler.serve(dos, httpRequest, httpResponse);
         } catch (IOException e) {

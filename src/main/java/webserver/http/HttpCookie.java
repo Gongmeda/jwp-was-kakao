@@ -30,8 +30,7 @@ public class HttpCookie {
         return path;
     }
 
-    @Override
-    public String toString() {
+    public String toResponseString() {
         return String.format("%s=%s; path=%s", name, value, path);
     }
 }

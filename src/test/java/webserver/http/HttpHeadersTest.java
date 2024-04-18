@@ -9,28 +9,44 @@ import org.junit.jupiter.api.Test;
 
 class HttpHeadersTest {
 
-    private final String headerString = "accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\n"
-                                        + "accept-charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\n"
-                                        + "accept-encoding: gzip,deflate\n"
-                                        + "accept-language: en-us,en;q=0.5\n"
-                                        + "cache-control: no-cache\n"
-                                        + "connection: keep-alive\n"
-                                        + "host: code.tutsplus.com\n"
-                                        + "keep-alive: 300\n"
-                                        + "pragma: no-cache\n"
-                                        + "user-agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5 (.NET CLR 3.5.30729)";
+    private final String requestHeaderString =
+        "accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\n"
+        + "accept-charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\n"
+        + "accept-encoding: gzip,deflate\n"
+        + "accept-language: en-us,en;q=0.5\n"
+        + "cache-control: no-cache\n"
+        + "cookie: JSESSIONID=656cef62-e3c4-40bc-a8df-94732920ed46; Path=/\n"
+        + "connection: keep-alive\n"
+        + "host: code.tutsplus.com\n"
+        + "keep-alive: 300\n"
+        + "pragma: no-cache\n"
+        + "user-agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5 (.NET CLR 3.5.30729)";
+
+    private final String responseHeaderString =
+        "accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\n"
+        + "accept-charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\n"
+        + "accept-encoding: gzip,deflate\n"
+        + "accept-language: en-us,en;q=0.5\n"
+        + "cache-control: no-cache\n"
+        + "connection: keep-alive\n"
+        + "host: code.tutsplus.com\n"
+        + "keep-alive: 300\n"
+        + "pragma: no-cache\n"
+        + "user-agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5 (.NET CLR 3.5.30729)\n"
+        + "set-cookie: JSESSIONID=656cef62-e3c4-40bc-a8df-94732920ed46; path=/\n"
+        + "set-cookie: Path=/; path=/";
 
     @DisplayName("HTTP 요청/응답 형식의 문자열로 변환할 수 있다")
     @Test
     void toString_convert() {
-        HttpHeaders headers = HttpHeaders.parse(headerString);
-        assertThat(headers.toString()).isEqualTo(headerString);
+        HttpHeaders headers = HttpHeaders.parse(requestHeaderString);
+        assertThat(headers.toResponseString()).isEqualTo(responseHeaderString);
     }
 
     @DisplayName("문자열을 파싱해서 헤더를 반환한다")
     @Test
     void parse() {
-        HttpHeaders headers = HttpHeaders.parse(headerString);
+        HttpHeaders headers = HttpHeaders.parse(requestHeaderString);
         assertAll(
             () -> assertThat(headers.get("Keep-Alive")).isEqualTo(List.of("300")),
             () -> assertThat(headers.get("Accept-Encoding")).isEqualTo(List.of("gzip", "deflate"))

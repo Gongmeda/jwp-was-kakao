@@ -81,16 +81,21 @@ public class HttpHeaders {
         add(CONTENT_LENGTH, String.valueOf(contentLength));
     }
 
-    @Override
-    public String toString() {
-        Map<String, List<String>> headersCopy = new TreeMap<>(headers);
+    public String toResponseString() {
+        String headerString = getHeaderString();
+        String setCookieString = getSetCookieHeaderString();
+        return String.join(System.lineSeparator(), headerString, setCookieString);
+    }
 
-        for (HttpCookie cookie : cookieStore.getCookies()) {
-            headersCopy.put(SET_COOKIE, List.of(cookie.toString()));
-        }
-
-        return headersCopy.entrySet().stream()
+    private String getHeaderString() {
+        return headers.entrySet().stream()
             .map(entry -> entry.getKey() + KEY_VALUE_SPLITTER + String.join(VALUE_DELIMITER, entry.getValue()))
+            .collect(Collectors.joining(System.lineSeparator()));
+    }
+
+    private String getSetCookieHeaderString() {
+        return cookieStore.getCookies().stream()
+            .map(cookie -> SET_COOKIE + KEY_VALUE_SPLITTER + cookie.toResponseString())
             .collect(Collectors.joining(System.lineSeparator()));
     }
 

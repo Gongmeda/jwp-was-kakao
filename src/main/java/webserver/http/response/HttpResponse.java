@@ -28,7 +28,7 @@ public class HttpResponse {
 
     public void respond(DataOutputStream dos) throws IOException {
         dos.writeBytes(statusLine.toString() + System.lineSeparator());
-        dos.writeBytes(headers.toString() + System.lineSeparator());
+        dos.writeBytes(headers.toResponseString() + System.lineSeparator());
         dos.writeBytes(System.lineSeparator());
 
         if (Objects.nonNull(body) && body.length != 0) {

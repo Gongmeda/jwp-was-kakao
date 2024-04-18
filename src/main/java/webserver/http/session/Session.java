@@ -9,8 +9,7 @@ public class Session {
     private final Map<String, Object> values;
 
     public Session(final String id) {
-        this.id = id;
-        this.values = new HashMap<>();
+        this(id, new HashMap<>());
     }
 
     private Session(String id, Map<String, Object> values) {
